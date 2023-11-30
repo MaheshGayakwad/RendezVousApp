@@ -1,0 +1,13 @@
+.App {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  background-image: radial-gradient(
+    circle,
+    #0045ae,
+    #0a3394,
+    #0b227b,
+    #071263,
+    #03004c
+  );
+}
