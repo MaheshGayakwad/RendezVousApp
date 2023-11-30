@@ -6,8 +6,6 @@ import ChatPage from "./pages/chatPage";
 import { Route } from "react-router-dom";
 
 function App() {
-  
-
   return (
     <>
       <div className="App">

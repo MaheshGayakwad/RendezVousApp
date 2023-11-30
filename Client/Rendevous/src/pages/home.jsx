@@ -16,7 +16,7 @@ import SignUp from "../components/authentication/SignUp";
 const Home = () => {
   return (
     <div>
-      <Container maxWidth="xl" centerContent>
+      <Container maxWidth="xl" centercontent="true">
         <Box
           display="flex"
           justifyContent="center"
@@ -25,8 +25,8 @@ const Home = () => {
           borderRadius={10}
           p={2}
           h={70}
-          m={50}
-          centerContent
+          centercontent="true"
+          margin={50}
         >
           <Text fontSize="30">The Name of the App</Text>
         </Box>

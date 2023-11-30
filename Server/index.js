@@ -1,12 +1,23 @@
-import express from "express";
+import express, { json } from "express";
 import cors from "cors";
+import userRoute from "./Routes/userRouter.js";
+import connectDB from "./config/db.js";
 
 const app = express();
-app.use(cors());
 
-app.get("/:name", (req, res) => {
-  const name = req.params.name;
-  res.send(name);
+app.use(cors());
+app.use(express.json());
+
+connectDB();
+
+app.get("/", (req, res) => {
+  res.send("App is running smooth as butter ;)");
+});
+
+app.use("/user", userRoute);
+
+app.use((req, res, next) => {
+  res.status(404).json({ message: "404 Page not found :(" });
 });
 
 app.listen(3000, (req, res) => {

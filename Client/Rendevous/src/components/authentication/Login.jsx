@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import {
   VStack,
@@ -15,11 +15,20 @@ const Login = () => {
   const handleClick = () => setShow(!show);
   const handleSubmit = () => {};
 
+  // const [email, setEmail] = useState(" ");
+  // const [password, setPassword] = useState(" ");
+
   return (
     <VStack>
       <FormControl isRequired="true">
         <FormLabel>Email</FormLabel>
-        <Input type="email" placeholder="Type your email" />
+        <Input
+          type="email"
+          placeholder="Type your email"
+          // onChange={(e) => {
+          //   return setEmail(e.target.value);
+          // }}
+        />
       </FormControl>
 
       <FormControl isRequired="true">
@@ -29,6 +38,9 @@ const Login = () => {
             pr="4.5rem"
             type={show ? "text" : "password"}
             placeholder="Enter password"
+            // onChange={(e) => {
+            //   return setPassword(e.target.value);
+            // }}
           />
           <InputRightElement width="4.5rem">
             <Button h="1.75rem" size="sm" onClick={handleClick}>
