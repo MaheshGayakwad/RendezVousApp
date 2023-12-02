@@ -6,21 +6,68 @@ import {
   InputRightElement,
   Button,
   InputGroup,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
+import axios from "axios";
+import { useHistory } from "react-router-dom";
 
 const SignUp = () => {
   const [show, setShow] = React.useState(false);
   const handleClick = () => setShow(!show);
-  const postDetaile = (pics) => {};
-  function handleSubmit() {}
-
+  const toast = useToast(); // toast
   //hooks for inputs
 
-  const [name, setName] = useState(" ");
-  const [email, setEmail] = useState(" ");
-  const [password, setPassword] = useState(" ");
-  const [confirmPassword, setconfirmPassword] = useState(" ");
+  const [name, setName] = useState();
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  const [confirmPassword, setconfirmPassword] = useState();
+  const history = useHistory(); // used to navigate views or routes of react
+
+  async function handleSubmit() {
+    if (!name || !email || !password || !confirmPassword) {
+      toast({
+        title: "please fill all the fields",
+        description: "All fields are mandatory to fill",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    } else {
+      try {
+        const config = { headers: { "Content-type": "application/json" } };
+
+        const data = await axios.post(
+          "http://localhost:3000/user",
+          {
+            name: name,
+            email: email,
+            password: password,
+          },
+          config
+        );
+        toast({
+          title: "User Created Successfully",
+          description: "You may continue with login",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+
+        localStorage.setItem("user", JSON.stringify(data.data));
+
+        history.push("/chats");
+      } catch (error) {
+        toast({
+          title: "There was some problem with sign up",
+          description: "Maybe email already exists",
+          status: "Error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    }
+  }
 
   return (
     <VStack spacing={5}>
