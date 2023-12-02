@@ -55,6 +55,7 @@ const authUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       pic: user.pic,
+      ticken: generateToken(user._id),
     });
   } else {
     res.status(400);
@@ -62,4 +63,28 @@ const authUser = asyncHandler(async (req, res) => {
   }
 });
 
-export { registerUser, authUser };
+const allUsers = asyncHandler(async (req, res) => {
+  //we want to render all users here just after successfull login
+  //we can use req.body or req.params because that data are sent using poast req
+  //so we are using queries here
+
+  const searchedText = req.query.search;
+
+  const keyword = searchedText
+    ? {
+        $or: [
+          { name: { $regex: searchedText, $options: "i" } },
+          { email: { $regex: searchedText, $options: "i" } },
+        ],
+      }
+    : {}; //this is conditional rendering if searched text has result(true) else false
+
+  const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
+  //.find will give authenticated users who have login
+  //successfully. We have user a protect middleware
+  //in routes from middleware folder so that
+  //only user with token gets authenticated..
+  res.send(users);
+});
+
+export { registerUser, authUser, allUsers };

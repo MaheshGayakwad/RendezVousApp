@@ -1,6 +1,7 @@
 import express, { json } from "express";
 import cors from "cors";
 import userRoute from "./Routes/userRouter.js";
+import chatRoute from "./Routes/chatRoute.js";
 import connectDB from "./config/db.js";
 
 const app = express();
@@ -15,6 +16,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/user", userRoute);
+app.use("/chat", chatRoute);
 
 app.use((req, res, next) => {
   res.status(404).json({ message: "404 Page not found :(" });

@@ -47,7 +47,7 @@ const Login = () => {
           config
         );
         localStorage.setItem("user", JSON.stringify(data.data));
-        history.push("/chats");
+        history.push("/chatPage");
       } catch (error) {
         toast({
           title: "There was some problem with sign up",
