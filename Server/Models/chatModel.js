@@ -18,7 +18,7 @@ const chatSchema = new mongoose.Schema(
       },
     ],
 
-    latest: [
+    latestMessage: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Message",
@@ -36,4 +36,4 @@ const chatSchema = new mongoose.Schema(
 
 const Chat = mongoose.model("Chat", chatSchema);
 
-module.exports = Chat;
+export default Chat;
