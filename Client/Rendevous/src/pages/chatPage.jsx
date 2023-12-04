@@ -1,35 +1,19 @@
-import {
-  Box,
-  Container,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
-  Text,
-} from "@chakra-ui/react";
 import React from "react";
+import { ChatState } from "../../context/ChatProvider.jsx";
+import { Box } from "@chakra-ui/react";
+import SideDrawer from "../../miscellenious/SideDrawer.jsx";
 
 const ChatPage = () => {
+  const { user } = ChatState();
+
   return (
     <div>
-      <Container maxWidth="xl" centercontent="true">
-        <Box
-          display="flex"
-          justifyContent="center"
-          bg="white"
-          w="xl"
-          borderRadius={10}
-          p={2}
-          h={70}
-          centercontent="true"
-          margin={50}
-        >
-          <Text fontSize="30">The Name of the App</Text>
-        </Box>
-        <Text color={"black"}>Hii</Text>
-      </Container>
-      
+      {user && <SideDrawer />}
+
+      <Box>
+        {/* {user && <MyChats></MyChats>} */}
+        {/* {user && <Chats></Chats>} */}
+      </Box>
     </div>
   );
 };
