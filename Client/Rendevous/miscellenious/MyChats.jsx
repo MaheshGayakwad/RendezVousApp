@@ -5,19 +5,38 @@ import axios from "axios";
 import SearchUserLoading from "../LoadingState/SearchUserLoading";
 import { AddIcon } from "@chakra-ui/icons";
 import { v4 } from "uuid";
+import getChatDetails from "../config/getUserDetails";
 
 const MyChats = () => {
-  const { user, setUser, selectedChat, setSelectedChat, chats, setChats } =
-    ChatState();
+  const {
+    user,
+    setUser,
+    selectedChat,
+    setSelectedChat,
+    chats,
+    setChats,
+    clicked,
+    setClicked,
+  } = ChatState();
 
   const [loggedUser, setLoggedUser] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const toast = useToast();
 
   const fetchChat = async () => {
     try {
-      const config = { headers: { Authorization: `Bearer ${user.token}` } };
-      const { data } = await axios.get(`http://localhost:3000/chat`, config);
+      setLoading(true);
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+
+      const { data } = await axios.get("http://localhost:3000/chat", config);
+
+      setLoading(false);
       setChats(data);
     } catch (error) {
       console.log(error);
@@ -33,43 +52,95 @@ const MyChats = () => {
   };
 
   useEffect(() => {
-    setLoggedUser(localStorage.getItem("user"));
+    setLoggedUser(JSON.parse(localStorage.getItem("user")));
+
     fetchChat();
   }, []);
 
-  const getChatDetails = (chatUsers) => {
-    console.log(chatUsers);
-  };
+  function getAllDetails(loggedUser, users) {
+    try {
+      return users[0]._id === loggedUser._id ? users[1].name : users[0].name;
+    } catch (error) {
+      location.reload();
+    }
+  }
+
   return (
-    <div>
+    <Box
+      key={v4()}
+      d={{ base: selectedChat ? "none" : "flex", md: "flex" }}
+      flexDir="column"
+      alignItems="center"
+      p={3}
+      bg="white"
+      w={{ base: "100%", md: "31%" }}
+      borderRadius="lg"
+      borderWidth="1px"
+    >
       <Box
         key={v4()}
-        bg={"white"}
-        h={"100vh"}
-        w={"25%"}
-        mt={5}
-        borderRadius={"10"}
+        pb={3}
+        px={3}
+        fontSize={{ base: "28px", md: "30px" }}
+        fontFamily="Work sans"
+        d="flex"
+        w="100%"
+        justifyContent="space-between"
+        alignItems="center"
       >
-        <Box display={"flex"} justifyContent={"space-between"} p={3}>
-          <Text fontFamily={"revert-layer"} fontSize={"2xl"} fontWeight={500}>
-            My Chats
-          </Text>
-          <Button>
-            Create group <AddIcon ml={1} />
-          </Button>
-        </Box>
-
+        My Chats
+        <Button
+          d="flex"
+          fontSize={{ base: "17px", md: "10px", lg: "17px" }}
+          rightIcon={<AddIcon />}
+        >
+          New Group Chat
+        </Button>
+      </Box>
+      <Box
+        d="flex"
+        flexDir="column"
+        p={3}
+        bg="#F8F8F8"
+        w="100%"
+        h="100%"
+        borderRadius="lg"
+        overflowY="hidden"
+      >
         {chats ? (
-          <Box key={v4()}>
-            {chats.map((chat) => {
-              return <Text key={v4()}>{getChatDetails(chat)}</Text>;
-            })}
-          </Box>
+          <Stack overflowY="scroll">
+            {chats.map((chat) => (
+              <Box
+                onClick={() => setSelectedChat(chat)}
+                cursor="pointer"
+                bg={selectedChat === chat ? "#38B2AC" : "#E8E8E8"}
+                color={selectedChat === chat ? "white" : "black"}
+                px={3}
+                py={2}
+                borderRadius="lg"
+                key={v4()}
+              >
+                <Text key={v4()}>
+                  {!chat.isGroupChat
+                    ? getAllDetails(loggedUser, chat.users)
+                    : chat.chatName}
+                </Text>
+                {chat.latestMessage && (
+                  <Text fontSize="xs">
+                    <b>{chat.latestMessage.sender.name} : </b>
+                    {chat.latestMessage.content.length > 50
+                      ? chat.latestMessage.content.substring(0, 51) + "..."
+                      : chat.latestMessage.content}
+                  </Text>
+                )}
+              </Box>
+            ))}
+          </Stack>
         ) : (
-          <SearchUserLoading></SearchUserLoading>
+          <SearchUserLoading />
         )}
       </Box>
-    </div>
+    </Box>
   );
 };
 

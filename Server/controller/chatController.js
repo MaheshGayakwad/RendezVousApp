@@ -9,17 +9,17 @@ const accessChat = expressAsyncHandler(async (req, res) => {
   //if chat already exists searched result will be provided
   //if chat dosent exist new chat will be created..
 
+  //We are using Chat mongo collection here
+  //one on one chat will have
+  //groupChat = false,
+  //also it should have both users available in users field....
+
   const { userId } = req.body;
 
   if (!userId) {
     res.sendStatus(401);
     throw new Error("No user id sent in parameter");
   }
-
-  //We are using Chat mongo collection here
-  //one on one chat will have
-  //groupChat = false,
-  //also it should have both users available in users field....
 
   var isChat = await Chat.find({
     isGroupChat: false,
@@ -78,8 +78,7 @@ const fetchChat = expressAsyncHandler(async (req, res) => {
         res.status(200).send(results);
       });
   } catch (error) {
-    res.status(400);
-    throw new Error(error.message);
+    res.send(error);
   }
 });
 
