@@ -59,27 +59,27 @@ const accessChat = expressAsyncHandler(async (req, res) => {
 });
 
 const fetchChat = expressAsyncHandler(async (req, res) => {
+  // we are getting all element of user array
+  //which has same user id as logged in
+  //this will provide us with all the
+  //one on one chat with logged in perosn
+
   try {
-    let fetchedChats = await Chat.find({
-      users: { $elemMatch: { $eq: req.user._id } },
-      // we are getting all element of user array
-      //which has same user id as logged in
-      //this will provide us with all the
-      //one on one chat with logged in perosn
-    })
+    Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
       .populate("users", "-password")
+      .populate("groupAdmin", "-password")
       .populate("latestMessage")
-      .populate("groupAdmin", "-password");
-
-    fetchedChats = await Chat.populate(fetchedChats, {
-      path: "latestMessage.sender",
-      select: "name email pic",
-    });
-
-    res.send(fetchedChats);
+      .sort({ updatedAt: -1 })
+      .then(async (results) => {
+        results = await User.populate(results, {
+          path: "latestMessage.sender",
+          select: "name pic email",
+        });
+        res.status(200).send(results);
+      });
   } catch (error) {
-    console.log(error);
-    res.send(error);
+    res.status(400);
+    throw new Error(error.message);
   }
 });
 

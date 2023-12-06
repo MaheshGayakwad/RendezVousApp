@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
   Avatar,
@@ -21,6 +21,7 @@ import {
   Tooltip,
   useToast,
   useDisclosure,
+  Spinner,
 } from "@chakra-ui/react";
 import { BellIcon, ChevronDownIcon, Search2Icon } from "@chakra-ui/icons";
 import { ChatState } from "../context/ChatProvider";
@@ -33,7 +34,10 @@ const SideDrawer = () => {
   const [search, setSearch] = useState("");
   const [searchResult, setSearchedResult] = useState([]);
   const [isLoading, setLoading] = useState(false);
-  const { user } = ChatState();
+  const [loadingChats, setLoadingChats] = useState(false);
+
+  const { user, setUser, selectedChat, setSelectedChat, chats, setChats } =
+    ChatState();
   const history = useHistory();
   const toast = useToast();
 
@@ -45,7 +49,6 @@ const SideDrawer = () => {
   };
 
   const handleSearch = async () => {
-    console.log(user);
     if (!search) {
       toast({
         title: "No name was entered",
@@ -65,13 +68,14 @@ const SideDrawer = () => {
           `http://localhost:3000/user?search=${search}`,
           config
         );
+
         setSearchedResult(data);
         setLoading(false);
       } catch (error) {
         console.log(error);
         toast({
           title: "Error Searching User",
-          description: "Something went wrong try again",
+          description: error,
           status: "error",
           duration: 2000,
           isClosable: true,
@@ -81,7 +85,47 @@ const SideDrawer = () => {
     }
   };
 
-  const acessChat = () => {};
+  const acessChat = async (userId) => {
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${user.token}`,
+      },
+    };
+
+    try {
+      setLoadingChats(true);
+
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.post(
+        `http://localhost:3000/chat`,
+        { userId },
+        config
+      );
+
+      if (!chats.find((c) => c._id === data._id)) {
+        const newData = await setChats([data, ...chats]);
+      }
+      setSelectedChat(data);
+      setLoadingChats(false);
+      onClose();
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Error fetching the chat",
+        description: error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+    }
+  };
 
   return (
     <div>
@@ -159,11 +203,12 @@ const SideDrawer = () => {
                     key={result._id} //for showing results of chat searches
                     userName={result.name}
                     userEmail={result.email}
-                    handleFunction={() => acessChat(user._id)}
+                    handleFunction={() => acessChat(result._id)}
                   />
                 );
               })
             )}
+            {loadingChats && <Spinner ml={20} size={"xl"} />}
           </DrawerBody>
 
           <DrawerFooter>
