@@ -107,7 +107,7 @@ const MyChats = () => {
         borderRadius="lg"
         overflowY="hidden"
       >
-        {chats ? (
+        {chats && !loading ? (
           <Stack overflowY="scroll">
             {chats.map((chat) => (
               <Box
