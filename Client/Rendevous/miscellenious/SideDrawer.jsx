@@ -80,7 +80,6 @@ const SideDrawer = () => {
         setSearchedResult(data);
         setLoading(false);
       } catch (error) {
-        console.log(error);
         toast({
           title: "Error Searching User",
           description: error,
@@ -96,7 +95,7 @@ const SideDrawer = () => {
   const acessChat = async (userId) => {
     try {
       setLoadingChats(true);
-      setClicked(!clicked);
+      setClicked(false);
       const config = {
         headers: {
           "Content-type": "application/json",
@@ -110,9 +109,10 @@ const SideDrawer = () => {
       );
 
       if (!chats.find((c) => c._id === data._id)) {
-        const newData = await setChats([data, ...chats]);
+        setChats([data, ...chats]);
       }
       setSelectedChat(data);
+      setClicked(true);
       setLoadingChats(false);
       onClose();
     } catch (error) {

@@ -6,6 +6,7 @@ import SearchUserLoading from "../LoadingState/SearchUserLoading";
 import { AddIcon } from "@chakra-ui/icons";
 import { v4 } from "uuid";
 import getChatDetails from "../config/getUserDetails";
+import GroupChatModal from "./GroupChatModal";
 
 const MyChats = () => {
   const {
@@ -24,22 +25,28 @@ const MyChats = () => {
 
   const toast = useToast();
 
-  const fetchChat = async () => {
-    try {
-      setLoading(true);
+  useEffect(() => {
+    setLoggedUser(JSON.parse(localStorage.getItem("user")));
 
+    if (clicked) {
+      fetchChat();
+    }
+  }, [clicked]);
+
+  const fetchChat = async () => {
+    setLoading(true);
+    try {
       const config = {
         headers: {
+          "Content-type": "application/json",
           Authorization: `Bearer ${user.token}`,
         },
       };
 
       const { data } = await axios.get("http://localhost:3000/chat", config);
-
-      setLoading(false);
       setChats(data);
+      console.log(chats);
     } catch (error) {
-      console.log(error);
       toast({
         title: "Error  Fetching chats",
         description: error,
@@ -49,19 +56,16 @@ const MyChats = () => {
         position: "top-left",
       });
     }
+    setLoading(false);
   };
-
-  useEffect(() => {
-    setLoggedUser(JSON.parse(localStorage.getItem("user")));
-
-    fetchChat();
-  }, []);
 
   function getAllDetails(loggedUser, users) {
     try {
-      return users[0]._id === loggedUser._id ? users[1].name : users[0].name;
+      if (clicked) {
+        return users[0]._id === loggedUser._id ? users[1].name : users[0].name;
+      }
     } catch (error) {
-      location.reload();
+      fetchChat();
     }
   }
 
@@ -89,13 +93,15 @@ const MyChats = () => {
         alignItems="center"
       >
         My Chats
-        <Button
-          d="flex"
-          fontSize={{ base: "17px", md: "10px", lg: "17px" }}
-          rightIcon={<AddIcon />}
-        >
-          New Group Chat
-        </Button>
+        <GroupChatModal>
+          <Button
+            d="flex"
+            fontSize={{ base: "17px", md: "10px", lg: "17px" }}
+            rightIcon={<AddIcon />}
+          >
+            New Group Chat
+          </Button>
+        </GroupChatModal>
       </Box>
       <Box
         d="flex"
@@ -107,8 +113,8 @@ const MyChats = () => {
         borderRadius="lg"
         overflowY="hidden"
       >
-        {chats && !loading ? (
-          <Stack overflowY="scroll">
+        {!loading && chats.length > 0 && clicked ? (
+          <Stack>
             {chats.map((chat) => (
               <Box
                 onClick={() => setSelectedChat(chat)}
