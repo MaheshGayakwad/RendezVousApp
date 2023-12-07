@@ -36,8 +36,16 @@ const SideDrawer = () => {
   const [isLoading, setLoading] = useState(false);
   const [loadingChats, setLoadingChats] = useState(false);
 
-  const { user, setUser, selectedChat, setSelectedChat, chats, setChats } =
-    ChatState();
+  const {
+    user,
+    setUser,
+    selectedChat,
+    setSelectedChat,
+    chats,
+    setChats,
+    clicked,
+    setClicked,
+  } = ChatState();
   const history = useHistory();
   const toast = useToast();
 
@@ -86,16 +94,9 @@ const SideDrawer = () => {
   };
 
   const acessChat = async (userId) => {
-    const config = {
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${user.token}`,
-      },
-    };
-
     try {
       setLoadingChats(true);
-
+      setClicked(!clicked);
       const config = {
         headers: {
           "Content-type": "application/json",

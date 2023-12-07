@@ -1,21 +1,24 @@
 import mongoose, { mongo } from "mongoose";
 import bcrypt from "bcrypt";
 
-const userSchema = new mongoose.Schema(
+const userSchema = mongoose.Schema(
   {
-    name: { type: String, require: true },
-    email: { type: String, require: true, unique: true },
-    password: { type: String, require: true },
+    name: { type: String, required: true },
+    email: { type: String, unique: true, required: true },
+    password: { type: String, required: true },
     pic: {
       type: String,
-      require: true,
+      required: true,
       default:
-        "https://img.myloview.com/stickers/default-avatar-profile-icon-vector-user-image-700-200353990.jpg",
+        "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
+    },
+    isAdmin: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestaps: true }
 );
 
 userSchema.path("createdAt");
