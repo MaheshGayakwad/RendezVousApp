@@ -29,7 +29,7 @@ const GroupChatModal = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
 
-  const { user, chats, setChatsState } = ChatState();
+  const { user, chats, setChats, clicked, setClicked } = ChatState();
 
   const handleSearch = async (search) => {
     setSearch(search);
@@ -53,9 +53,9 @@ const GroupChatModal = ({ children }) => {
           `http://localhost:3000/user?search=${search}`,
           config
         );
+
         setSearchResult(data);
         setLoading(false);
-        console.log(data);
       } catch (error) {
         console.log(error);
         toast({
@@ -70,7 +70,55 @@ const GroupChatModal = ({ children }) => {
     }
   };
 
-  const handleSubmit = () => {};
+  //handle Search
+
+  const handleSubmit = async () => {
+    if (!selectedUsers || !grouChatName) {
+      toast({
+        title: "Please fill all the fields",
+        description: " You did select users or insert group chat",
+        status: "warning",
+        duration: 2000,
+        isClosable: true,
+        position: "top-left",
+      });
+    } else {
+      try {
+        setLoading(true);
+        setClicked(false);
+
+        const config = { headers: { Authorization: `Bearer ${user.token}` } };
+
+        const { data } = await axios.post(
+          "http://localhost:3000/chat/group",
+          {
+            name: grouChatName,
+            users: JSON.stringify(selectedUsers.map((users) => users._id)),
+          },
+          config
+        );
+
+        setChats((prevChats) => [data, ...prevChats]);
+        toast({
+          title: "New grp chat created",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+          position: "top-left",
+        });
+        setLoading(false);
+        setClicked(true);
+      } catch (error) {
+        toast({
+          title: "Error in creating group chat",
+          status: "error",
+          duration: 2000,
+          isClosable: true,
+          position: "top-left",
+        });
+      }
+    }
+  };
 
   const handleGroup = (userToAdd) => {
     if (selectedUsers.includes(userToAdd)) {
@@ -85,6 +133,10 @@ const GroupChatModal = ({ children }) => {
     } else {
       setselectedUsers([...selectedUsers, userToAdd]);
     }
+  };
+
+  const handleDelete = (result) => {
+    setselectedUsers(selectedUsers.filter((sel) => sel._id !== result._id));
   };
 
   return (
@@ -110,6 +162,7 @@ const GroupChatModal = ({ children }) => {
                 placeholder="Group chat name"
                 onChange={(e) => setGroupChatName(e.target.value)}
                 value={grouChatName}
+                required
               />
             </FormControl>
             <FormControl>
@@ -121,9 +174,13 @@ const GroupChatModal = ({ children }) => {
               />
             </FormControl>
 
-            <Box display={"flex"} gap={2} m={2}>
+            <Box display={"flex"} flexWrap={"wrap"} gap={2} m={2}>
               {selectedUsers.map((user) => (
-                <GroupUsers key={user._id} name={user.name} />
+                <GroupUsers
+                  key={user._id}
+                  name={user.name}
+                  handleDelete={() => handleDelete(user)}
+                />
               ))}
             </Box>
           </ModalBody>

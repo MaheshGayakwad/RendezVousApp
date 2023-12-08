@@ -1,20 +1,21 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Box, CloseButton, Text } from "@chakra-ui/react";
 import React from "react";
 
 const GroupUsers = (prop) => {
   return (
     <div>
-      <Box display={"flex"} alignContent={"center"} flexDirection="row" gap={2}>
-        <Box
-          borderRadius="md"
-          bg="purple"
-          color="white"
-          w={"auto"}
-          px={2}
-          h={8}
-        >
-          {prop.name}
-        </Box>
+      <Box
+        display={"flex"}
+        alignContent={"center"}
+        flexDirection={"row"}
+        borderRadius="md"
+        bg="purple"
+        color="white"
+        px={2}
+        h={8}
+      >
+        <Text pt={1}>{prop.name}</Text>
+        <CloseButton color={"white"} onClick={prop.handleDelete} />
       </Box>
     </div>
   );

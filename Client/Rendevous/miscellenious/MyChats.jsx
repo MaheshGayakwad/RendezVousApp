@@ -5,7 +5,7 @@ import axios from "axios";
 import SearchUserLoading from "../LoadingState/SearchUserLoading";
 import { AddIcon } from "@chakra-ui/icons";
 import { v4 } from "uuid";
-import getChatDetails from "../config/getUserDetails";
+
 import GroupChatModal from "./GroupChatModal";
 
 const MyChats = () => {
@@ -22,7 +22,6 @@ const MyChats = () => {
 
   const [loggedUser, setLoggedUser] = useState("");
   const [loading, setLoading] = useState(false);
-
   const toast = useToast();
 
   useEffect(() => {
@@ -45,7 +44,7 @@ const MyChats = () => {
 
       const { data } = await axios.get("http://localhost:3000/chat", config);
       setChats(data);
-      console.log(chats);
+      console.log(data);
     } catch (error) {
       toast({
         title: "Error  Fetching chats",
@@ -65,7 +64,8 @@ const MyChats = () => {
         return users[0]._id === loggedUser._id ? users[1].name : users[0].name;
       }
     } catch (error) {
-      fetchChat();
+      //fetchChat();
+      console.log(error);
     }
   }
 

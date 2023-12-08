@@ -78,41 +78,42 @@ const fetchChat = expressAsyncHandler(async (req, res) => {
         res.status(200).send(results);
       });
   } catch (error) {
-    res.send(error);
+    res.status(400);
+    throw new Error(error.message);
   }
 });
 
 const createGroupChat = expressAsyncHandler(async (req, res) => {
   if (!req.body.users || !req.body.name) {
-    res.sendStatus(401);
-    throw new Error("Users not provided");
+    return res.status(400).send({ message: "Please Fill all the feilds" });
   }
 
   var users = JSON.parse(req.body.users);
-  //this is names of users from front end
 
   if (users.length < 2) {
-    res.sendStatus(401);
-    throw new Error(" Atleast two users are needed to create a group chat");
+    return res
+      .status(400)
+      .send("More than 2 users are required to form a group chat");
   }
 
-  var groupChat = await Chat.create({
-    chatName: req.body.name,
-    users: users,
-    isGroupChat: true,
-    groupAdmin: req.user,
-  });
-  //we created a group chat using front end credentials
-  //now we need to populate the results
+  users.push(req.user);
 
   try {
-    var fullGroupChat = await Chat.findOne({ _id: groupChat._id })
+    const groupChat = await Chat.create({
+      chatName: req.body.name,
+      users: users,
+      isGroupChat: true,
+      groupAdmin: req.user,
+    });
+
+    const fullGroupChat = await Chat.findOne({ _id: groupChat._id })
       .populate("users", "-password")
       .populate("groupAdmin", "-password");
 
-    res.send(fullGroupChat);
+    res.status(200).json(fullGroupChat);
   } catch (error) {
-    res.send(error);
+    res.status(400);
+    throw new Error(error.message);
   }
 });
 

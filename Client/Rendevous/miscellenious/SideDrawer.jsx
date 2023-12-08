@@ -109,7 +109,7 @@ const SideDrawer = () => {
       );
 
       if (!chats.find((c) => c._id === data._id)) {
-        setChats([data, ...chats]);
+        setChats((prevChats) => [data, ...prevChats]);
       }
       setSelectedChat(data);
       setClicked(true);
