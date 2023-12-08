@@ -95,11 +95,7 @@ const SideDrawer = () => {
   const acessChat = async (userId) => {
     try {
       setLoadingChats(true);
-<<<<<<< HEAD
       setClicked(false);
-=======
-      setClicked(!clicked);
->>>>>>> 762e9f202a480bc92405cef28e3c7823711dc866
       const config = {
         headers: {
           "Content-type": "application/json",
