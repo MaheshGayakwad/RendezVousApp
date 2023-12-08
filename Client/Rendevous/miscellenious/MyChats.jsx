@@ -5,10 +5,9 @@ import axios from "axios";
 import SearchUserLoading from "../LoadingState/SearchUserLoading";
 import { AddIcon } from "@chakra-ui/icons";
 import { v4 } from "uuid";
-
 import GroupChatModal from "./GroupChatModal";
 
-const MyChats = () => {
+const MyChats = ({ fetchChat }) => {
   const {
     user,
     setUser,
@@ -28,11 +27,11 @@ const MyChats = () => {
     setLoggedUser(JSON.parse(localStorage.getItem("user")));
 
     if (clicked) {
-      fetchChat();
+      fetchedChat();
     }
-  }, [clicked]);
+  }, [clicked, fetchChat]);
 
-  const fetchChat = async () => {
+  const fetchedChat = async () => {
     setLoading(true);
     try {
       const config = {
@@ -77,7 +76,8 @@ const MyChats = () => {
       alignItems="center"
       p={3}
       bg="white"
-      w={{ base: "100%", md: "31%" }}
+      w={{ base: "100%", md: "29%" }}
+      height={"85vh"}
       borderRadius="lg"
       borderWidth="1px"
     >
@@ -87,7 +87,7 @@ const MyChats = () => {
         px={3}
         fontSize={{ base: "28px", md: "30px" }}
         fontFamily="Work sans"
-        d="flex"
+        display="flex"
         w="100%"
         justifyContent="space-between"
         alignItems="center"
@@ -96,23 +96,14 @@ const MyChats = () => {
         <GroupChatModal>
           <Button
             d="flex"
-            fontSize={{ base: "17px", md: "10px", lg: "17px" }}
+            fontSize={{ base: "12px", md: "10px", lg: "15px" }}
             rightIcon={<AddIcon />}
           >
             New Group Chat
           </Button>
         </GroupChatModal>
       </Box>
-      <Box
-        d="flex"
-        flexDir="column"
-        p={3}
-        bg="#F8F8F8"
-        w="100%"
-        h="100%"
-        borderRadius="lg"
-        overflowY="hidden"
-      >
+      <Box d="flex" flexDir="column" p={3} w="100%" h="100%" borderRadius="lg">
         {!loading && chats.length > 0 && clicked ? (
           <Stack>
             {chats.map((chat) => (

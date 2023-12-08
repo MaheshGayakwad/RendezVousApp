@@ -1,4 +1,5 @@
 import React from "react";
+
 import {
   Modal,
   ModalOverlay,
@@ -12,18 +13,25 @@ import {
   Image,
   Text,
   Avatar,
+  AvatarGroup,
+  IconButton,
 } from "@chakra-ui/react";
 import ChatProvider, { ChatState } from "../context/ChatProvider";
 
-const ProfileModal = ({ children }) => {
+const ProfileModal = ({ user, children }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const { user } = ChatState();
+  //const { user } = ChatState();
 
   return (
     <div>
-      {children && <span onClick={onOpen}>{children}</span>}
-
+      {children ? (
+        <span onClick={onOpen}>{children}</span>
+      ) : (
+        <AvatarGroup size={"sm"} ml={15} spacing="1rem" onClick={onOpen}>
+          <Avatar bg="red.500" />
+        </AvatarGroup>
+      )}
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -36,7 +44,9 @@ const ProfileModal = ({ children }) => {
               name={user.name}
               mb={4}
             ></Avatar>
-            <h1>hi this is mahesh</h1>
+            <Text fontFamily={"cursive"} fontWeight={200}>
+              Hi this is {user.name}
+            </Text>
             <Text>Email : {user.email}</Text>
           </ModalBody>
 

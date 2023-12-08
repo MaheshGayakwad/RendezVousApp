@@ -166,7 +166,7 @@ const SideDrawer = () => {
               <Avatar size={"sm"} cursor={"pointer"} name={user.name}></Avatar>
             </MenuButton>
             <MenuList>
-              <ProfileModal>
+              <ProfileModal user = {user}>
                 <MenuItem>Profile</MenuItem>
               </ProfileModal>
               <MenuDivider />
