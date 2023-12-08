@@ -36,14 +36,22 @@ const MyChats = () => {
   const fetchChat = async () => {
     setLoading(true);
     try {
+ 
       const config = {
         headers: {
           "Content-type": "application/json",
+      setLoading(true);
+
+      const config = {
+        headers: {
           Authorization: `Bearer ${user.token}`,
         },
       };
 
       const { data } = await axios.get("http://localhost:3000/chat", config);
+
+
+      setLoading(false);
       setChats(data);
       console.log(chats);
     } catch (error) {
@@ -59,6 +67,7 @@ const MyChats = () => {
     setLoading(false);
   };
 
+
   function getAllDetails(loggedUser, users) {
     try {
       if (clicked) {
@@ -68,6 +77,22 @@ const MyChats = () => {
       fetchChat();
     }
   }
+
+
+  useEffect(() => {
+    setLoggedUser(JSON.parse(localStorage.getItem("user")));
+
+    fetchChat();
+  }, []);
+
+  function getAllDetails(loggedUser, users) {
+    try {
+      return users[0]._id === loggedUser._id ? users[1].name : users[0].name;
+    } catch (error) {
+      location.reload();
+    }
+  }
+
 
   return (
     <Box
@@ -91,6 +116,7 @@ const MyChats = () => {
         w="100%"
         justifyContent="space-between"
         alignItems="center"
+
       >
         My Chats
         <GroupChatModal>
@@ -115,6 +141,30 @@ const MyChats = () => {
       >
         {!loading && chats.length > 0 && clicked ? (
           <Stack>
+
+      >
+        My Chats
+        <Button
+          d="flex"
+          fontSize={{ base: "17px", md: "10px", lg: "17px" }}
+          rightIcon={<AddIcon />}
+        >
+          New Group Chat
+        </Button>
+      </Box>
+      <Box
+        d="flex"
+        flexDir="column"
+        p={3}
+        bg="#F8F8F8"
+        w="100%"
+        h="100%"
+        borderRadius="lg"
+        overflowY="hidden"
+      >
+        {chats ? (
+          <Stack overflowY="scroll">
+
             {chats.map((chat) => (
               <Box
                 onClick={() => setSelectedChat(chat)}
