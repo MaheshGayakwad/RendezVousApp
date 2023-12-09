@@ -14,7 +14,7 @@ const OneOnOneChat = ({ fetchChat, setFetchChat }) => {
         return users[0]._id === loggedUser._id ? users[1].name : users[0].name;
       }
     } catch (error) {
-      //fetchChat();
+      //location.reload();
       console.log(error);
     }
   }

@@ -111,7 +111,7 @@ const SideDrawer = () => {
       if (!chats.find((c) => c._id === data._id)) {
         setChats((prevChats) => [data, ...prevChats]);
       }
-      setSelectedChat(data);
+      //setSelectedChat(data);
       setClicked(true);
       setLoadingChats(false);
       onClose();
@@ -166,7 +166,7 @@ const SideDrawer = () => {
               <Avatar size={"sm"} cursor={"pointer"} name={user.name}></Avatar>
             </MenuButton>
             <MenuList>
-              <ProfileModal user = {user}>
+              <ProfileModal user={user}>
                 <MenuItem>Profile</MenuItem>
               </ProfileModal>
               <MenuDivider />
