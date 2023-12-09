@@ -22,7 +22,11 @@ import GroupUsers from "./GroupUsers";
 import axios from "axios";
 import ChatSearchedNames from "./ChatSearchedNames";
 
-const UpdateGroupChatModel = ({ fetchChat, setFetchChat }) => {
+const UpdateGroupChatModel = ({
+  fetchChat,
+  setFetchChat,
+  fetchMessagesApiCall,
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const { user, selectedChat, setSelectedChat } = ChatState();
@@ -68,7 +72,7 @@ const UpdateGroupChatModel = ({ fetchChat, setFetchChat }) => {
 
       userToDelete._id === user._id ? setSelectedChat() : setSelectedChat(data);
       setFetchChat(!fetchChat);
-      //fetchMessages();
+      fetchMessagesApiCall();
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -275,11 +279,10 @@ const UpdateGroupChatModel = ({ fetchChat, setFetchChat }) => {
                 />
               ))
             )}
-            ;
           </ModalBody>
 
           <ModalFooter display={"flex"} justifyContent={"right"}>
-            <Button colorScheme="red" onClick={onClose}>
+            <Button colorScheme="red" onClick={() => handleDelete(user)}>
               Leave Group
             </Button>
           </ModalFooter>

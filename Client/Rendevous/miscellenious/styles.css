@@ -1,0 +1,8 @@
+.chatDiv {
+  overflow-y: scroll;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}
+.chatDiv::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and Opera */
+}
