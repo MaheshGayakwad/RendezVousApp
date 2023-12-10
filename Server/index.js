@@ -9,6 +9,8 @@ import { createServer } from "node:http";
 import { Server } from "socket.io";
 import http from "http";
 
+import path from "node:path";
+
 const app = express();
 const server = http.createServer(app);
 
@@ -24,6 +26,31 @@ app.get("/", (req, res) => {
 app.use("/user", userRoute);
 app.use("/chat", chatRoute);
 app.use("/message", messageRoute);
+
+//------------------------For Deployment------------------------------------
+
+const _dirName1 = path.resolve();
+
+if (process.env.NODE_ENV) {
+  app.use(express.static(path.join(_dirName1, "../Client/Rendevous/dist")));
+
+  console.log(path.resolve(_dirName1, "../Client/Rendevous/dist"));
+
+  app.get("*", (req, res) => {
+    res.sendFile(
+      path.resolve(_dirName1, "../Client/Rendevous/dist/index.html")
+    );
+  });
+  server.listen(3000, () => {
+    console.log("server running for production");
+  });
+} else {
+  server.listen(3000, () => {
+    console.log("server running on Local Port");
+  });
+}
+
+//------------------------For Deployment------------------------------------
 
 app.use((req, res, next) => {
   res.status(404).json({ message: "404 Page not found :(" });
@@ -65,8 +92,4 @@ io.on("connection", (socket) => {
       socket.to(user._id).emit("message received", newMessage);
     });
   });
-});
-
-server.listen(3000, () => {
-  console.log("server running ");
 });
